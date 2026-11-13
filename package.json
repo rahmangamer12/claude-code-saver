@@ -1,0 +1,34 @@
+{
+  "name": "claude-yaad",
+  "version": "1.0.0",
+  "description": "Zero-token session memory and usage savers for Claude Code: per-project state that survives /clear and compaction, /save /yaad /kharcha skills, context-size warning, Sonnet subagents.",
+  "bin": {
+    "claude-yaad": "bin/install.js"
+  },
+  "files": [
+    "bin",
+    "kit",
+    "claude-ai",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "skills",
+    "hooks",
+    "tokens"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahmangamer12/claude-yaad.git"
+  },
+  "homepage": "https://github.com/rahmangamer12/claude-yaad#readme",
+  "bugs": {
+    "url": "https://github.com/rahmangamer12/claude-yaad/issues"
+  }
+}
