@@ -19,7 +19,7 @@ const TAIL = 3 * 1024 * 1024;
 
 // ---- auto-update: a detached child asks npm for the latest version at most once a day;
 // the next SessionStart tells Claude, which offers the update to the user (one "yes" and it runs).
-const META = path.join(HOME, '.claude', 'state', 'claude-yaad.json');
+const META = path.join(HOME, '.claude', 'state', 'claude-code-saver.json');
 const readMeta = () => { try { return JSON.parse(fs.readFileSync(META, 'utf8')); } catch { return null; } };
 const writeMeta = (m) => { try { fs.writeFileSync(META, JSON.stringify(m, null, 2)); } catch {} };
 const newer = (a, b) => {
@@ -28,7 +28,7 @@ const newer = (a, b) => {
   return false;
 };
 if (process.argv[2] === 'check-update') {
-  const req = require('https').get('https://registry.npmjs.org/claude-yaad/latest',
+  const req = require('https').get('https://registry.npmjs.org/claude-code-saver/latest',
     { headers: { accept: 'application/json' }, timeout: 8000 }, (res) => {
       let b = ''; res.on('data', (c) => (b += c));
       res.on('end', () => { try { const v = JSON.parse(b).version; const m = readMeta(); if (m && v) { m.latest = v; writeMeta(m); } } catch {} });
@@ -40,7 +40,7 @@ function updateNote() {
   const m = readMeta();
   if (!m || process.env.CK_NO_UPDATE_CHECK === '1') return;
   if (m.latest && m.version && newer(m.latest, m.version))
-    console.log(`[claude-yaad] Naya version ${m.latest} aa gaya hai (laga hua ${m.version}). User ko ek line mein batao aur poocho "update karun?"; haan kahe to chalao: npx -y claude-yaad@latest`);
+    console.log(`[claude-code-saver] Naya version ${m.latest} aa gaya hai (laga hua ${m.version}). User ko ek line mein batao aur poocho "update karun?"; haan kahe to chalao: npx -y claude-code-saver@latest`);
   if (!m.lastCheck || Date.now() - m.lastCheck > 864e5) {
     m.lastCheck = Date.now(); writeMeta(m);
     try {

@@ -1,8 +1,12 @@
-# claude-yaad
+# claude-code-saver
 
-**Session memory and usage savers for Claude Code. One command, zero tokens.**
+**Stop hitting your Claude Code usage limit.** One command, zero tokens.
 
-*Yaad* means "memory" in Urdu. Claude Code forgets everything on `/clear`, and long sessions burn your usage limit because every message re-sends the whole conversation. `claude-yaad` fixes both:
+```bash
+npx claude-code-saver
+```
+
+Long Claude Code sessions burn your weekly limit because every message re-sends the whole conversation, and `/clear` makes Claude forget everything. `claude-code-saver` fixes both. On the author's own machine the average context per message dropped from **~200k to ~86k tokens** the day it was installed (about 55-60% less per message), and with `/save` + `/clear` habits the saving reaches ~75-80%.
 
 - **Each project remembers where it was.** A fresh session (after `/clear`, a compact, a crash or a new day) starts by reading that project's own small state file.
 - **Long sessions get flagged.** You get a one-line warning when the context passes ~200k tokens, so you can `/save` and `/clear` before every message gets expensive.
@@ -21,14 +25,16 @@ The hooks are plain Node scripts. They read only the tail of the transcript, fin
 You need **Node.js 18+** and **Claude Code**.
 
 ```bash
-npx claude-yaad
+npx claude-code-saver
 ```
 
 Or straight from GitHub; it works the same:
 
 ```bash
-npx github:rahmangamer12/claude-yaad
+npx github:rahmangamer12/claude-code-saver
 ```
+
+Used the old name? `claude-yaad` is now `claude-code-saver`. Just run the command above; it updates in place.
 
 Then **restart Claude Code**. That's it.
 
@@ -43,21 +49,21 @@ What the installer does:
 | Hooks: SessionStart, PreCompact, SessionEnd, UserPromptSubmit | `~/.claude/settings.json` (backed up first as `settings.json.bak-claude-kit-<time>`) |
 | `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150k` | `env` in `~/.claude/settings.json`; skipped if you already set a window, or with `--keep-compact-window` |
 | `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` | `env` in `~/.claude/settings.json`; skipped if you already set one, or with `--keep-subagent-model` |
-| Skill zips for claude.ai | `~/.claude/claude-yaad-zips/` (built from the same skills, so they never drift) |
-| Installed version, for the update check | `~/.claude/state/claude-yaad.json` |
+| Skill zips for claude.ai | `~/.claude/claude-code-saver-zips/` (built from the same skills, so they never drift) |
+| Installed version, for the update check | `~/.claude/state/claude-code-saver.json` |
 
 Your other hooks, settings and skills are left alone. Running it again updates the kit in place.
 
 ### Options
 
 ```bash
-npx claude-yaad --keep-subagent-model   # do not touch the subagent model
-npx claude-yaad --keep-compact-window   # do not touch the auto-compact window
-npx claude-yaad --yes                   # open the claude.ai Skills page without asking
-npx claude-yaad --no-open               # never open anything
-npx claude-yaad --zips                  # only write the skill zips for claude.ai into the current folder
-npx claude-yaad --uninstall             # remove the hooks and the script (keeps skills and state)
-npx claude-yaad --uninstall --purge     # also remove the three skills
+npx claude-code-saver --keep-subagent-model   # do not touch the subagent model
+npx claude-code-saver --keep-compact-window   # do not touch the auto-compact window
+npx claude-code-saver --yes                   # open the claude.ai Skills page without asking
+npx claude-code-saver --no-open               # never open anything
+npx claude-code-saver --zips                  # only write the skill zips for claude.ai into the current folder
+npx claude-code-saver --uninstall             # remove the hooks and the script (keeps skills and state)
+npx claude-code-saver --uninstall --purge     # also remove the three skills
 ```
 
 ---
@@ -94,7 +100,7 @@ Set these as environment variables, or in `env` in `settings.json`:
 
 ### Updates
 
-Once a day, at session start, the hook starts a background request to `registry.npmjs.org/claude-yaad/latest` (no data about you is sent; it does not slow the start). If a newer version exists, the next session opens with a one-line note and Claude asks whether to update; say yes and it runs `npx -y claude-yaad@latest`. Nothing updates without your yes.
+Once a day, at session start, the hook starts a background request to `registry.npmjs.org/claude-code-saver/latest` (no data about you is sent; it does not slow the start). If a newer version exists, the next session opens with a one-line note and Claude asks whether to update; say yes and it runs `npx -y claude-code-saver@latest`. Nothing updates without your yes.
 
 ---
 
@@ -102,7 +108,7 @@ Once a day, at session start, the hook starts a background request to `registry.
 
 Chat on claude.ai and in the desktop app has no hooks and no lasting disk, so only the skills apply there:
 
-1. The normal `npx claude-yaad` already built `save.zip`, `yaad.zip` and `kharcha.zip` in `~/.claude/claude-yaad-zips/` and offered to open the upload page. (They are also in the [`claude-ai/`](claude-ai) folder of this repo, or run `npx claude-yaad --zips`.)
+1. The normal `npx claude-code-saver` already built `save.zip`, `yaad.zip` and `kharcha.zip` in `~/.claude/claude-code-saver-zips/` and offered to open the upload page. (They are also in the [`claude-ai/`](claude-ai) folder of this repo, or run `npx claude-code-saver --zips`.)
 2. claude.ai → **Settings → Capabilities → Skills → Upload skill**, one zip at a time. Do this once; it applies to web and desktop chat.
 3. In chat, Claude prints a short state block on its own when a task finishes or the chat gets long (or when you say `/save`). Paste it into your **Project instructions** (or the first message of the next chat), and `/yaad` reads it from there.
 
@@ -119,7 +125,7 @@ The **Claude Code tab** of the desktop app and the IDE extensions use the same `
 ## Uninstall
 
 ```bash
-npx claude-yaad --uninstall --purge
+npx claude-code-saver --uninstall --purge
 ```
 
 Your state files in `~/.claude/state/projects/` are kept. Delete them by hand if you want.

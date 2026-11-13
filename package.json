@@ -1,9 +1,9 @@
 {
-  "name": "claude-yaad",
+  "name": "claude-code-saver",
   "version": "1.1.0",
-  "description": "Zero-token session memory and usage savers for Claude Code: per-project state that survives /clear and compaction, /save /yaad /kharcha skills, context-size warning, Sonnet subagents.",
+  "description": "Stop hitting your Claude Code usage limit. Cuts token use ~50-80% with a 150k auto-compact window, per-project memory that survives /clear, Sonnet subagents and a usage audit. One command: npx claude-code-saver",
   "bin": {
-    "claude-yaad": "bin/install.js"
+    "claude-code-saver": "bin/install.js"
   },
   "files": [
     "bin",
@@ -16,19 +16,30 @@
     "node": ">=18"
   },
   "keywords": [
-    "claude",
     "claude-code",
-    "skills",
-    "hooks",
-    "tokens"
+    "claude",
+    "anthropic",
+    "claude-code-hooks",
+    "claude-code-skills",
+    "token-saver",
+    "save-tokens",
+    "usage-limit",
+    "rate-limit",
+    "context-window",
+    "auto-compact",
+    "session-memory",
+    "memory",
+    "cost",
+    "ai-coding",
+    "cli"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rahmangamer12/claude-yaad.git"
+    "url": "git+https://github.com/rahmangamer12/claude-code-saver.git"
   },
-  "homepage": "https://github.com/rahmangamer12/claude-yaad#readme",
+  "homepage": "https://github.com/rahmangamer12/claude-code-saver#readme",
   "bugs": {
-    "url": "https://github.com/rahmangamer12/claude-yaad/issues"
+    "url": "https://github.com/rahmangamer12/claude-code-saver/issues"
   }
 }

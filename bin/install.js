@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// claude-yaad installer: npx claude-yaad            -> install / update everything (Claude Code + claude.ai zips)
-//                       npx claude-yaad --yes      -> same, and open the claude.ai Skills page without asking
-//                       npx claude-yaad --zips     -> only write the claude.ai skill zips into the current folder
-//                       npx claude-yaad --uninstall -> remove hooks + kit files (skills kept unless --purge)
+// claude-code-saver installer: npx claude-code-saver            -> install / update everything (Claude Code + claude.ai zips)
+//                       npx claude-code-saver --yes      -> same, and open the claude.ai Skills page without asking
+//                       npx claude-code-saver --zips     -> only write the claude.ai skill zips into the current folder
+//                       npx claude-code-saver --uninstall -> remove hooks + kit files (skills kept unless --purge)
 'use strict';
 const fs = require('fs');
 const os = require('os');
@@ -16,8 +16,8 @@ const VERSION = require(path.join(ROOT, 'package.json')).version;
 const CLAUDE = path.join(os.homedir(), '.claude');
 const SETTINGS = path.join(CLAUDE, 'settings.json');
 const SCRIPT = path.join(CLAUDE, 'scripts', 'ck_state.js');
-const META = path.join(CLAUDE, 'state', 'claude-yaad.json');
-const ZIPDIR = path.join(CLAUDE, 'claude-yaad-zips');
+const META = path.join(CLAUDE, 'state', 'claude-code-saver.json');
+const ZIPDIR = path.join(CLAUDE, 'claude-code-saver-zips');
 const SKILLS_URL = 'https://claude.ai/settings/capabilities';
 const SKILLS = ['save', 'yaad', 'kharcha'];
 const args = process.argv.slice(2);
@@ -141,14 +141,14 @@ async function main() {
     for (const f of [SCRIPT, META]) try { fs.unlinkSync(f); } catch {}
     fs.rmSync(ZIPDIR, { recursive: true, force: true });
     if (has('--purge')) for (const k of SKILLS) fs.rmSync(path.join(CLAUDE, 'skills', k), { recursive: true, force: true });
-    console.log('claude-yaad removed. Your state files in ~/.claude/state/projects are kept.');
+    console.log('claude-code-saver removed. Your state files in ~/.claude/state/projects are kept.');
     return;
   }
 
   const prev = readJSON(META, {});
   console.log(prev.version && prev.version !== VERSION
-    ? `claude-yaad: updating ${prev.version} → ${VERSION} in ${CLAUDE}`
-    : `claude-yaad ${VERSION}: installing into ${CLAUDE}`);
+    ? `claude-code-saver: updating ${prev.version} → ${VERSION} in ${CLAUDE}`
+    : `claude-code-saver ${VERSION}: installing into ${CLAUDE}`);
 
   // 1. Claude Code: hook script, skills, hooks, env
   copyDir(path.join(ROOT, 'kit', 'scripts'), path.join(CLAUDE, 'scripts'));
@@ -204,4 +204,4 @@ async function main() {
   }
 }
 
-main().catch((e) => { console.error('claude-yaad: ' + (e && e.message || e)); process.exit(1); });
+main().catch((e) => { console.error('claude-code-saver: ' + (e && e.message || e)); process.exit(1); });
