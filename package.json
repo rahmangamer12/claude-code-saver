@@ -1,6 +1,6 @@
 {
   "name": "claude-yaad",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-token session memory and usage savers for Claude Code: per-project state that survives /clear and compaction, /save /yaad /kharcha skills, context-size warning, Sonnet subagents.",
   "bin": {
     "claude-yaad": "bin/install.js"

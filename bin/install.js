@@ -65,6 +65,7 @@ if (has('--zips')) {
 if (has('--uninstall')) {
   const s = readSettings(); backup(); stripOurs(s);
   if (s.env && s.env.CLAUDE_CODE_SUBAGENT_MODEL === 'sonnet') delete s.env.CLAUDE_CODE_SUBAGENT_MODEL;
+  if (s.env && s.env.CLAUDE_CODE_AUTO_COMPACT_WINDOW === '150k') delete s.env.CLAUDE_CODE_AUTO_COMPACT_WINDOW;
   fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 2));
   try { fs.unlinkSync(SCRIPT); } catch {}
   if (has('--purge')) for (const k of SKILLS) fs.rmSync(path.join(CLAUDE, 'skills', k), { recursive: true, force: true });
@@ -95,6 +96,10 @@ s.env = s.env || {};
 if (!has('--keep-subagent-model') && !s.env.CLAUDE_CODE_SUBAGENT_MODEL) {
   s.env.CLAUDE_CODE_SUBAGENT_MODEL = 'sonnet';
   log('subagents default to Sonnet (pass a model explicitly for hard work)');
+}
+if (!has('--keep-compact-window') && !s.env.CLAUDE_CODE_AUTO_COMPACT_WINDOW && !s.autoCompactWindow) {
+  s.env.CLAUDE_CODE_AUTO_COMPACT_WINDOW = '150k';
+  log('auto-compact window 150k: sessions never grow huge, so every message stays cheap');
 }
 fs.mkdirSync(CLAUDE, { recursive: true });
 fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 2));

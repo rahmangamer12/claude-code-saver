@@ -6,6 +6,7 @@
 
 - **Each project remembers where it was.** A fresh session (after `/clear`, a compact, a crash or a new day) starts by reading that project's own small state file.
 - **Long sessions get flagged.** You get a one-line warning when the context passes ~200k tokens, so you can `/save` and `/clear` before every message gets expensive.
+- **Sessions never grow huge.** Auto-compact runs at a 150k-token window, so a long chat can't creep to 200k+ tokens re-read on every message (this was the single biggest usage drain we measured: one chat re-read 216 million tokens in a night). Your state file keeps the continuity after each compact.
 - **Subagents default to Sonnet** instead of the main model. Pass a model explicitly when one piece really needs the big one.
 - **Three skills:** `/save`, `/yaad` and `/kharcha` (find what is eating your usage).
 
@@ -36,6 +37,7 @@ What the installer does:
 | Hook script `ck_state.js` | `~/.claude/scripts/` |
 | Skills `save`, `yaad`, `kharcha` | `~/.claude/skills/` (an older skill with the same name is moved to `~/.claude/skill-backups/`) |
 | Hooks: SessionStart, PreCompact, SessionEnd, UserPromptSubmit | `~/.claude/settings.json` (backed up first as `settings.json.bak-claude-kit-<time>`) |
+| `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150k` | `env` in `~/.claude/settings.json`; skipped if you already set a window, or with `--keep-compact-window` |
 | `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` | `env` in `~/.claude/settings.json`; skipped if you already set one, or with `--keep-subagent-model` |
 
 Your other hooks, settings and skills are left alone. Running it again updates the kit in place.
@@ -44,6 +46,7 @@ Your other hooks, settings and skills are left alone. Running it again updates t
 
 ```bash
 npx claude-yaad --keep-subagent-model   # do not touch the subagent model
+npx claude-yaad --keep-compact-window   # do not touch the auto-compact window
 npx claude-yaad --zips                  # put the skill zips for claude.ai in the current folder
 npx claude-yaad --uninstall             # remove the hooks and the script (keeps skills and state)
 npx claude-yaad --uninstall --purge     # also remove the three skills
