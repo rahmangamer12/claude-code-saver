@@ -1,6 +1,6 @@
 ---
 name: save
-description: Kaam ka state save karo taake /clear, compact ya band karne par kuch na khoye. Use when the user says save karo, clear karne laga hoon, band kar raha hoon, yaad rakho kahan the, handoff, bas aaj ke liye — and proactively when a piece of work reaches a natural stopping point, before a long or risky operation, or when a hook says the context is getting heavy.
+description: Kaam ka state save karo taake /clear, compact ya band karne par kuch na khoye. Use when the user says save karo, clear karne laga hoon, band kar raha hoon, yaad rakho kahan the, handoff, bas aaj ke liye — and proactively when a piece of work reaches a natural stopping point, before a long or risky operation, or when a hook says the context is getting heavy. In claude.ai web / Claude desktop chat, also run it on your own when a task finishes or the chat gets long.
 ---
 
 # /save — freeze this project's state in one small file
@@ -16,7 +16,11 @@ The file has two parts:
 - **Auto part (the hook's):** that marker line and everything below it. Never edit it, and keep it in place: the hook rewrites it on its own.
 If the file does not exist, just write the top part.
 
-**claude.ai web / Claude desktop chat (no file system that survives):** do not write a file. Print the same block in a code box and tell the user: "Ye block Project ke instructions/knowledge mein paste kar do, ya naye chat ke pehle message mein." That is the only memory that survives there.
+**claude.ai web / Claude desktop chat (no file system that survives):** do not write a file. Print the same block in a code box. That block is the only memory that survives there, so **do this on your own, without being asked**, at each of these points (once per point, never after every reply):
+- a task in this chat is finished, or the user says they are stopping;
+- the chat has run long (about 25 messages), so the next one should start fresh.
+
+After the box, one line: "Ye block Project instructions mein paste kar do (ya naye chat ke pehle message mein), agli chat `/yaad` se yahin se shuru hogi."
 
 ## What goes in (60 lines maximum, hard cap)
 

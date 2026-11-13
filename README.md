@@ -9,6 +9,8 @@
 - **Sessions never grow huge.** Auto-compact runs at a 150k-token window, so a long chat can't creep to 200k+ tokens re-read on every message (this was the single biggest usage drain we measured: one chat re-read 216 million tokens in a night). Your state file keeps the continuity after each compact.
 - **Subagents default to Sonnet** instead of the main model. Pass a model explicitly when one piece really needs the big one.
 - **Three skills:** `/save`, `/yaad` and `/kharcha` (find what is eating your usage).
+- **One command sets up everything:** Claude Code, plus ready-to-upload skill zips for claude.ai web and the Claude desktop chat, and it opens the upload page for you.
+- **Keeps itself up to date:** once a day it checks npm; when a new version is out, Claude tells you and runs the update when you say yes.
 
 The hooks are plain Node scripts. They read only the tail of the transcript, finish in under a second, and print nothing unless there is something to say. They cost **zero model tokens** except the short state they print at session start.
 
@@ -22,13 +24,15 @@ You need **Node.js 18+** and **Claude Code**.
 npx claude-yaad
 ```
 
-Not on npm yet? Install straight from GitHub; it works the same:
+Or straight from GitHub; it works the same:
 
 ```bash
 npx github:rahmangamer12/claude-yaad
 ```
 
 Then **restart Claude Code**. That's it.
+
+At the end it asks one question: open the claude.ai Skills page and the zips folder? Press Enter, then drag the three zips onto **Upload skill**. That covers web and desktop chat too. (`--yes` opens them without asking, `--no-open` skips it.)
 
 What the installer does:
 
@@ -39,6 +43,8 @@ What the installer does:
 | Hooks: SessionStart, PreCompact, SessionEnd, UserPromptSubmit | `~/.claude/settings.json` (backed up first as `settings.json.bak-claude-kit-<time>`) |
 | `CLAUDE_CODE_AUTO_COMPACT_WINDOW=150k` | `env` in `~/.claude/settings.json`; skipped if you already set a window, or with `--keep-compact-window` |
 | `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` | `env` in `~/.claude/settings.json`; skipped if you already set one, or with `--keep-subagent-model` |
+| Skill zips for claude.ai | `~/.claude/claude-yaad-zips/` (built from the same skills, so they never drift) |
+| Installed version, for the update check | `~/.claude/state/claude-yaad.json` |
 
 Your other hooks, settings and skills are left alone. Running it again updates the kit in place.
 
@@ -47,7 +53,9 @@ Your other hooks, settings and skills are left alone. Running it again updates t
 ```bash
 npx claude-yaad --keep-subagent-model   # do not touch the subagent model
 npx claude-yaad --keep-compact-window   # do not touch the auto-compact window
-npx claude-yaad --zips                  # put the skill zips for claude.ai in the current folder
+npx claude-yaad --yes                   # open the claude.ai Skills page without asking
+npx claude-yaad --no-open               # never open anything
+npx claude-yaad --zips                  # only write the skill zips for claude.ai into the current folder
 npx claude-yaad --uninstall             # remove the hooks and the script (keeps skills and state)
 npx claude-yaad --uninstall --purge     # also remove the three skills
 ```
@@ -82,6 +90,11 @@ Set these as environment variables, or in `env` in `settings.json`:
 |---|---|---|
 | `CK_WARN_TOKENS` | `200000` | Warn when the context passes this many tokens |
 | `CK_SHOW_CHARS` | `3500` | How much of the state file to show at session start |
+| `CK_NO_UPDATE_CHECK` | unset | `1` turns off the daily update check |
+
+### Updates
+
+Once a day, at session start, the hook starts a background request to `registry.npmjs.org/claude-yaad/latest` (no data about you is sent; it does not slow the start). If a newer version exists, the next session opens with a one-line note and Claude asks whether to update; say yes and it runs `npx -y claude-yaad@latest`. Nothing updates without your yes.
 
 ---
 
@@ -89,9 +102,9 @@ Set these as environment variables, or in `env` in `settings.json`:
 
 Chat on claude.ai and in the desktop app has no hooks and no lasting disk, so only the skills apply there:
 
-1. `npx claude-yaad --zips` puts `save.zip`, `yaad.zip` and `kharcha.zip` in your folder. They are also in the [`claude-ai/`](claude-ai) folder of this repo.
-2. claude.ai → **Settings → Capabilities → Skills → Upload skill**, one zip at a time.
-3. In chat, `/save` prints a state block. Paste it into your **Project instructions** (or the first message of the next chat), and `/yaad` reads it from there.
+1. The normal `npx claude-yaad` already built `save.zip`, `yaad.zip` and `kharcha.zip` in `~/.claude/claude-yaad-zips/` and offered to open the upload page. (They are also in the [`claude-ai/`](claude-ai) folder of this repo, or run `npx claude-yaad --zips`.)
+2. claude.ai → **Settings → Capabilities → Skills → Upload skill**, one zip at a time. Do this once; it applies to web and desktop chat.
+3. In chat, Claude prints a short state block on its own when a task finishes or the chat gets long (or when you say `/save`). Paste it into your **Project instructions** (or the first message of the next chat), and `/yaad` reads it from there.
 
 The **Claude Code tab** of the desktop app and the IDE extensions use the same `~/.claude` folder as the terminal, so the full kit works there after the normal install.
 
